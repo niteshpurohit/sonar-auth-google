@@ -54,6 +54,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static java.lang.String.format;
+import java.util.Arrays;
 
 @ServerSide
 public class GoogleIdentityProvider implements OAuth2IdentityProvider {
@@ -121,7 +122,15 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
 
     GsonUser gsonUser = requestUser(scribe, accessToken);
     String redirectTo;
-    if (settings.oauthDomain()==null || (settings.oauthDomain()!=null && gsonUser.getEmail().endsWith("@"+settings.oauthDomain()))) {
+    boolean isAllowed = settings.oauthDomain()==null;
+    if(settings.oauthDomain()!=null){
+          String domains = settings.oauthDomain();
+          domains = domains.replaceAll("\\s+","");
+          String[] domainsArray = domains.split(",");
+          String domain = gsonUser.getEmail().split("@")[1];
+          isAllowed = Arrays.asList(domainsArray).contains(domain);
+    }
+    if (isAllowed) {
       redirectTo = settings.getSonarBaseURL();
       UserIdentity userIdentity = userIdentityFactory.create(gsonUser);
       context.authenticate(userIdentity);

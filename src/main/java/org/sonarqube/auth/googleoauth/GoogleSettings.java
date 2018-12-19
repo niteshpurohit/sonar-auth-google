@@ -178,7 +178,7 @@ public class GoogleSettings {
         .build(),
       PropertyDefinition.builder(LIMIT_DOMAIN)
         .name("Allowed Domain")
-        .description("When set, this will only allow users from the specified GApps domain to authenticate")
+        .description("When set, this will only allow users from the specified GApps domain to authenticate. Can use comma sperated domains for multiple domains. Example: 'example.com,example.org'")
         .category(CATEGORY)
         .subCategory(SUBCATEGORY)
         .index(index++)
